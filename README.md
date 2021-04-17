@@ -12,6 +12,8 @@ https://docs.google.com/spreadsheets/d/e/{Document ID}/pubhtml
 
 ## Unity側の設定
 
+※Unitask必須なので事前に入れておく
+
 ファイル一式をAssets配下にコピーする
 
 メニューバーに以下が追加されるので実行する
@@ -29,3 +31,15 @@ Document ID　ウェブ公開時に生成されたID
 Sheet Infos　シート名とgid
 
 最後にImportCSVボタンを押す
+
+## DB作成方法
+
+・使い方はほぼGDE
+
+・1行目が変数名、2行目が型名
+
+・1行目に小文字でignoreと入れれば、その列は無視される
+
+・対応している型は、int、string、list_int、list_stringのみ
+
+・list_stringはダブルクォーテーション不要　例`apple,orange,banana`
