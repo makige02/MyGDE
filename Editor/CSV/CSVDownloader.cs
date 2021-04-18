@@ -189,38 +189,53 @@ $DATA$
         string dataStr = "";
 
         // データ行から
-        for (int row = 2; row < sheet.Count; row++) {
-            for (int i = 0; i < validIndex.Count; i++) {
-
+        for (int row = 2; row < sheet.Count; row++)
+        {
+            for (int i = 0; i < validIndex.Count; i++)
+            {
                 int clm = validIndex[i];
+                string target = sheet[row][clm];
 
                 // 最初の列（_key）
-                if (i == 0) {
-                    dataStr += "\t\t{\"" + sheet[row][clm] + "\", new " + rowClass + "{_key=\"" + sheet[row][clm] +
+                if (i == 0)
+                {
+                    dataStr += "\t\t{\"" + target + "\", new " + rowClass + "{_key=\"" + target +
                                "\",";
                     continue;
                 }
 
                 // データ列以降
-                else if (i > 1) {
+                else if (i > 1)
+                {
                     dataStr += ",";
                 }
 
-                switch (varType[i]) {
+                switch (varType[i])
+                {
                     case "int":
-                        bool isBlank = string.IsNullOrWhiteSpace(sheet[row][clm]);
-                        dataStr += "_" + varName[i] + "=" + (isBlank ? "0" : sheet[row][clm]);
+                    case "float":
+                        bool isBlank = string.IsNullOrWhiteSpace(target);
+                        dataStr += "_" + varName[i] + "=" + (isBlank ? "0" : target);
+                        if (varType[i] == "float")
+                            dataStr += "f";
                         break;
                     case "string":
-                        dataStr += "_" + varName[i] + "=\"" + sheet[row][clm] + "\"";
+                        dataStr += "_" + varName[i] + "=\"" + target + "\"";
+                        break;
+                    case "bool":
+                        dataStr += "_" + varName[i] + "=" + (target == "TRUE" ? "true" : "false");
                         break;
                     case "List<int>":
-                        dataStr += "_" + varName[i] + "=new List<int>{" + sheet[row][clm] + "}";
+                        dataStr += "_" + varName[i] + "=new List<int>{" + target + "}";
+                        break;
+                    case "List<float>":
+                        dataStr += "_" + varName[i] + "=new List<float>{" + ConvertFloats(target) + "}";
                         break;
                     case "List<string>":
-                        var splitStr = sheet[row][clm].Split(',');
+                        var splitStr = target.Split(',');
                         var joinStr = "";
-                        for (int ls = 0; ls < splitStr.Length; ls++) {
+                        for (int ls = 0; ls < splitStr.Length; ls++)
+                        {
                             if (ls > 0) joinStr += ",";
                             joinStr += "\"" + splitStr[ls] + "\"";
                         }
@@ -231,9 +246,7 @@ $DATA$
                         Debug.Log($"型が正しくありません varType[i]:[{varType[i]}]");
                         break;
                 }
-
             }
-
             dataStr += "}},\n";
         }
 
@@ -263,6 +276,22 @@ $DATA$
         AssetDatabase.Refresh();
     }
 
+    // input : 1.5,1.2,10
+    // output: 1.5f,1.2f,10f  (Add "f")
+    static string ConvertFloats(string floats)
+    {
+        // RemoveEmptyEntriesを指定しないと、空文字が残ってしまう
+        // 2引数の場合、delimiterはstring[]で指定しないとcompile errorというふざけた仕様
+        var splitStr = floats.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+        var joinStr = "";
+        for (int i = 0; i < splitStr.Length; i++)
+        {
+            if (i > 0)
+                joinStr += ",";
+            joinStr += splitStr[i] + "f";
+        }
+        return joinStr;
+    }
 }
 
 #endif

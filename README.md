@@ -38,8 +38,10 @@ Sheet Infos　シート名とgid
 
 ・1行目が変数名、2行目が型名
 
+・1列目の1行目はkeyで２行目はstring固定
+
 ・1行目に小文字でignoreと入れれば、その列は無視される
 
-・対応している型は、int、string、list_int、list_stringのみ
+・対応している型は、int、float、string、list_int、list_float、list_string、boolのみ
 
 ・list_stringはダブルクォーテーション不要　例`apple,orange,banana`
