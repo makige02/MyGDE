@@ -46,7 +46,7 @@ public class CSVDownloader : EditorWindow {
     }
 
     public static async UniTask DownloadAsync(string docID, List<SheetInfo> si) {
-        
+
         List<UniTask> tasks = new List<UniTask>();
 
         // SheetInfoの数だけURLを生成
@@ -64,7 +64,7 @@ public class CSVDownloader : EditorWindow {
     }
 
     private static async UniTask GetCSVAsync(string url, string sheetName) {
-        
+
         using (var request = UnityWebRequest.Get(url)) {
             // キャッシュしない
             request.useHttpContinue = false;
@@ -86,7 +86,7 @@ public class CSVDownloader : EditorWindow {
     }
 
     public static void ParseCsv(string csv, string sheetName) {
-        
+
         var sheet = CSVParser.LoadFromString(csv);
 
         // 有効な列
@@ -178,6 +178,7 @@ $DATA$
         // データ行から
         for (int row = 2; row < sheet.Count; row++) {
             for (int i = 0; i < validIndex.Count; i++) {
+
                 int clm = validIndex[i];
 
                 // 最初の列（_key）
@@ -213,7 +214,11 @@ $DATA$
 
                         dataStr += "_" + varName[i] + "=new List<string>{" + joinStr + "}";
                         break;
+                    default:
+                        Debug.Log($"型が正しくありません varType[i]:[{varType[i]}]");
+                        break;
                 }
+
             }
 
             dataStr += "}},\n";
