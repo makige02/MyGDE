@@ -119,7 +119,7 @@ public class CSVDownloader : EditorWindow {
             var clm = nameRow[i];
 
             // ignoreを含む場合は無視する
-            if (clm.Contains("ignore")) {
+            if (clm.Contains("ignore") || string.IsNullOrEmpty(clm))
                 // do nothing
             }
             else {

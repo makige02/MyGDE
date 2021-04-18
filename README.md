@@ -40,7 +40,7 @@ Sheet Infos　シート名とgid
 
 ・1列目の1行目はkeyで２行目はstring固定
 
-・1行目に小文字でignoreと入れれば、その列は無視される
+・1行目に小文字でignoreと入れるか、空白にすればその列は無視される
 
 ・対応している型は、int、float、string、list_int、list_float、list_string、boolのみ
 
