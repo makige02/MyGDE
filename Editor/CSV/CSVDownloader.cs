@@ -62,25 +62,38 @@ public class CSVDownloader : EditorWindow {
 
         Debug.Log(tasks.Count + " 件の通信が完了しました");
     }
-
-    private static async UniTask GetCSVAsync(string url, string sheetName) {
-
-        using (var request = UnityWebRequest.Get(url)) {
+    private static async UniTask GetCSVAsync(string url, string sheetName)
+    {
+        using (var request = UnityWebRequest.Get(url))
+        {
             // キャッシュしない
             request.useHttpContinue = false;
-            try {
+            try
+            {
                 // CSVダウンロード
-                var result = await request.SendWebRequest().ToUniTask().Timeout(System.TimeSpan.FromSeconds(5f));
-                if (result.error != null || result.isHttpError || result.isNetworkError) {
-                    Debug.Log("通信に失敗しました");
+                var requestTask = await request.SendWebRequest().ToUniTask().Timeout(System.TimeSpan.FromSeconds(5f));
+                switch (requestTask.result)
+                {
+                    case UnityWebRequest.Result.ConnectionError:
+                        Debug.Log("Connection Error Occured(isHttpError)");
+                        break;
+                    case UnityWebRequest.Result.ProtocolError:
+                        Debug.Log("Protocol Error Occured(isNetworkError)");
+                        break;
                 }
-                else {
+                if (requestTask.error != null)
+                {
+                    Debug.Log("通信に失敗しました:" + requestTask.error);
+                }
+                else
+                {
                     // クラスファイル生成
                     ParseCsv(request.downloadHandler.text, sheetName);
                 }
             }
-            catch (TimeoutException e) {
-                Debug.Log("タイムアウトしました");
+            catch (TimeoutException e)
+            {
+                Debug.Log("タイムアウトしました:" + e.Source);
             }
         }
     }
