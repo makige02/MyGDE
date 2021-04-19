@@ -16,6 +16,7 @@ public class MyGDESettingsData : ScriptableObject {
 
 [System.Serializable]
 public class SheetInfo {
+    public bool mute;
     public string sheetName;
     public string sheetGID;
 }

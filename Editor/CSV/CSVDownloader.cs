@@ -51,6 +51,10 @@ public class CSVDownloader : EditorWindow {
 
         // SheetInfoの数だけURLを生成
         for (int i = 0; i < si.Count; i++) {
+
+            // muteの場合は無視する
+            if (si[i].mute) continue;
+            
             string fullURL = string.Format(url, docID, si[i].sheetGID);
             // URLからCSVをダウンロード
             tasks.Add(GetCSVAsync(fullURL, si[i].sheetName));
