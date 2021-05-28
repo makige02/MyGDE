@@ -141,7 +141,7 @@ public static class CSVParser
 
 	static void AddCell(List<string> row, StringBuilder cell)
 	{
-		row.Add(cell.ToString().Replace("\r", "").Replace("\n", ""));
+		row.Add(cell.ToString().Replace("\r", "").TrimEnd('\n', '\r').Replace("\n", "\\n"));
 		cell.Length = 0; // Old C#.
 	}
 
