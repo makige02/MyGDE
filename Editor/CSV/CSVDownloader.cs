@@ -214,11 +214,12 @@ $DATA$
                     dataStr += ",";
                 }
 
+                bool isBlank = string.IsNullOrWhiteSpace(target);
+                        
                 switch (varType[i])
                 {
                     case "int":
                     case "float":
-                        bool isBlank = string.IsNullOrWhiteSpace(target);
                         dataStr += "_" + varName[i] + "=" + (isBlank ? "0" : target);
                         if (varType[i] == "float")
                             dataStr += "f";
@@ -230,21 +231,42 @@ $DATA$
                         dataStr += "_" + varName[i] + "=" + (target == "TRUE" ? "true" : "false");
                         break;
                     case "List<int>":
-                        dataStr += "_" + varName[i] + "=new List<int>{" + target + "}";
+                        if (isBlank)
+                        {
+                            dataStr += "_" + varName[i] + "=new List<int>()";
+                        }
+                        else
+                        {
+                            dataStr += "_" + varName[i] + "=new List<int>{" + target + "}";
+                        }
                         break;
                     case "List<float>":
-                        dataStr += "_" + varName[i] + "=new List<float>{" + ConvertFloats(target) + "}";
+                        if (isBlank)
+                        {
+                            dataStr += "_" + varName[i] + "=new List<float>()";
+                        }
+                        else
+                        {
+                            dataStr += "_" + varName[i] + "=new List<float>{" + ConvertFloats(target) + "}";
+                        }
                         break;
                     case "List<string>":
-                        var splitStr = target.Split(',');
-                        var joinStr = "";
-                        for (int ls = 0; ls < splitStr.Length; ls++)
+                        if (isBlank)
                         {
-                            if (ls > 0) joinStr += ",";
-                            joinStr += "\"" + splitStr[ls] + "\"";
+                            dataStr += "_" + varName[i] + "=new List<string>()";
                         }
-
-                        dataStr += "_" + varName[i] + "=new List<string>{" + joinStr + "}";
+                        else
+                        {
+                            var splitStr = target.Split(',');
+                            var joinStr = "";
+                            for (int ls = 0; ls < splitStr.Length; ls++)
+                            {
+                                if (ls > 0) joinStr += ",";
+                                joinStr += "\"" + splitStr[ls] + "\"";
+                            }
+                            dataStr += "_" + varName[i] + "=new List<string>{" + joinStr + "}";
+                        }
+                        
                         break;
                     default:
                         Debug.Log($"型が正しくありません varType[i]:[{varType[i]}]");
